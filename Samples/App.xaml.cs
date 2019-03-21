@@ -17,7 +17,7 @@ namespace Samples
     {
         public App()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             // Enable currently experimental features
             ExperimentalFeatures.Enable(
@@ -26,23 +26,37 @@ namespace Samples
 
             VersionTracking.Track();
 
-            MainPage = new NavigationPage(new HomePage());
+            this.MainPage = new NavigationPage(new HomePage());
         }
 
         protected override void OnStart()
         {
             if ((Device.RuntimePlatform == Device.Android && CommonConstants.AppCenterAndroid != "AC_ANDROID") ||
-               (Device.RuntimePlatform == Device.iOS && CommonConstants.AppCenteriOS != "AC_IOS") ||
-               (Device.RuntimePlatform == Device.UWP && CommonConstants.AppCenterUWP != "AC_UWP"))
+                (Device.RuntimePlatform == Device.iOS && CommonConstants.AppCenteriOS != "AC_IOS"))
             {
+                AppCenter.LogLevel = LogLevel.Verbose;
+                Crashes.ShouldProcessErrorReport = ShouldProcess;
+                Crashes.ShouldAwaitUserConfirmation = ConfirmationHandler;
+
                 AppCenter.Start(
-                $"ios={CommonConstants.AppCenteriOS};" +
-                $"android={CommonConstants.AppCenterAndroid};" +
-                $"uwp={CommonConstants.AppCenterUWP}",
-                typeof(Analytics),
-                typeof(Crashes),
-                typeof(Distribute));
+                    $"ios={CommonConstants.AppCenteriOS};" +
+                    $"android={CommonConstants.AppCenterAndroid}",
+                    typeof(Analytics),
+                    typeof(Crashes),
+                    typeof(Distribute));
             }
+        }
+
+        private static bool ConfirmationHandler()
+        {
+            Crashes.NotifyUserConfirmation(UserConfirmation.AlwaysSend);
+
+            return true;
+        }
+
+        private static bool ShouldProcess(ErrorReport report)
+        {
+            return true;
         }
 
         protected override void OnSleep()
