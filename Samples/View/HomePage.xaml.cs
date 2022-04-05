@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.AppCenter.Analytics;
 using Samples.Model;
 using Xamarin.Forms;
 
@@ -8,16 +10,25 @@ namespace Samples.View
     {
         public HomePage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
-        async void OnSampleTapped(object sender, ItemTappedEventArgs e)
+        private async void OnSampleTapped(object sender, ItemTappedEventArgs e)
         {
-            var item = e.Item as SampleItem;
-            if (item == null)
+            if (e.Item is not SampleItem item)
+            {
                 return;
+            }
 
-            await Navigation.PushAsync((Page)Activator.CreateInstance(item.PageType));
+            // DEMO: Use TrackEvent to write diagnostics info to App Center
+            var properties = new Dictionary<string, string>
+            {
+                { "PageName", $"{item.PageType.Name}"}
+            };
+            Analytics.TrackEvent("PageView", properties);
+            Analytics.TrackEvent($"PageView: {item.PageType.Name}", properties);
+
+            await this.Navigation.PushAsync((Page)Activator.CreateInstance(item.PageType));
 
             // deselect Item
             ((ListView)sender).SelectedItem = null;

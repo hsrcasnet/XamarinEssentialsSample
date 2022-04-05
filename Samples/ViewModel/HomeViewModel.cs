@@ -85,6 +85,12 @@ namespace Samples.ViewModel
                     "Get and add contacts in your device.",
                     new[] { "contacts", "people", "device" }),
                 new SampleItem(
+                    "⚡️",
+                    "Crash",
+                    typeof(NonExistingPage),
+                    "Causes an unhandled exception",
+                    new[] { "crash", "exception" }),
+                new SampleItem(
                     "📱",
                     "Device Info",
                     typeof(DeviceInfoPage),

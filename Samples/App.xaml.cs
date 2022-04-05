@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
@@ -24,18 +20,18 @@ namespace Samples
 
         public App()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             // Enable currently experimental features
             Device.SetFlags(new string[] { "MediaElement_Experimental" });
 
             VersionTracking.Track();
 
-            MainPage = new NavigationPage(new HomePage());
+            this.MainPage = new NavigationPage(new HomePage());
 
             try
             {
-                AppActions.OnAppAction += AppActions_OnAppAction;
+                AppActions.OnAppAction += this.AppActions_OnAppAction;
             }
             catch (FeatureNotSupportedException ex)
             {
@@ -46,16 +42,16 @@ namespace Samples
         protected override async void OnStart()
         {
             if ((Device.RuntimePlatform == Device.Android && CommonConstants.AppCenterAndroid != "AC_ANDROID") ||
-               (Device.RuntimePlatform == Device.iOS && CommonConstants.AppCenteriOS != "AC_IOS") ||
-               (Device.RuntimePlatform == Device.UWP && CommonConstants.AppCenterUWP != "AC_UWP"))
+                (Device.RuntimePlatform == Device.iOS && CommonConstants.AppCenteriOS != "AC_IOS") ||
+                (Device.RuntimePlatform == Device.UWP && CommonConstants.AppCenterUWP != "AC_UWP"))
             {
                 AppCenter.Start(
-                $"ios={CommonConstants.AppCenteriOS};" +
-                $"android={CommonConstants.AppCenterAndroid};" +
-                $"uwp={CommonConstants.AppCenterUWP}",
-                typeof(Analytics),
-                typeof(Crashes),
-                typeof(Distribute));
+                    $"ios={CommonConstants.AppCenteriOS};" +
+                    $"android={CommonConstants.AppCenterAndroid};" +
+                    $"uwp={CommonConstants.AppCenterUWP}",
+                    typeof(Analytics),
+                    typeof(Crashes),
+                    typeof(Distribute));
             }
 
             try
@@ -70,7 +66,7 @@ namespace Samples
             }
         }
 
-        void AppActions_OnAppAction(object sender, AppActionEventArgs e)
+        private void AppActions_OnAppAction(object sender, AppActionEventArgs e)
         {
             // Don't handle events fired for old application instances
             // and cleanup the old instance's event handler
