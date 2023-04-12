@@ -26,7 +26,7 @@ namespace Samples.View
                 { "PageName", $"{item.PageType.Name}"}
             };
             Analytics.TrackEvent("PageView", properties);
-            Analytics.TrackEvent($"PageView: {item.PageType.Name}", properties);
+            Analytics.TrackEvent($"PageView: {item.PageType.Name}");
 
             await this.Navigation.PushAsync((Page)Activator.CreateInstance(item.PageType));
 
