@@ -5,15 +5,15 @@ namespace Samples.ViewModel
 {
     public class BaseViewModel : ObservableObject
     {
-        bool isBusy;
+        private bool isBusy;
 
         public bool IsBusy
         {
-            get => isBusy;
-            set => SetProperty(ref isBusy, value, onChanged: () => OnPropertyChanged(nameof(IsNotBusy)));
+            get => this.isBusy;
+            set => this.SetProperty(ref this.isBusy, value, onChanged: () => this.OnPropertyChanged(nameof(this.IsNotBusy)));
         }
 
-        public bool IsNotBusy => !IsBusy;
+        public bool IsNotBusy => !this.IsBusy;
 
         public virtual void OnAppearing()
         {

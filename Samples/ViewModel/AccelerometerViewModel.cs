@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -8,17 +7,17 @@ namespace Samples.ViewModel
 {
     public class AccelerometerViewModel : BaseViewModel
     {
-        double x;
-        double y;
-        double z;
-        string shakeTime = string.Empty;
-        bool isActive;
-        int speed = 0;
+        private double x;
+        private double y;
+        private double z;
+        private string shakeTime = string.Empty;
+        private bool isActive;
+        private int speed = 0;
 
         public AccelerometerViewModel()
         {
-            StartCommand = new Command(OnStart);
-            StopCommand = new Command(OnStop);
+            this.StartCommand = new Command(this.OnStart);
+            this.StopCommand = new Command(this.OnStop);
         }
 
         public ICommand StartCommand { get; }
@@ -27,32 +26,32 @@ namespace Samples.ViewModel
 
         public string ShakeTime
         {
-            get => shakeTime;
-            set => SetProperty(ref shakeTime, value);
+            get => this.shakeTime;
+            set => this.SetProperty(ref this.shakeTime, value);
         }
 
         public double X
         {
-            get => x;
-            set => SetProperty(ref x, value);
+            get => this.x;
+            set => this.SetProperty(ref this.x, value);
         }
 
         public double Y
         {
-            get => y;
-            set => SetProperty(ref y, value);
+            get => this.y;
+            set => this.SetProperty(ref this.y, value);
         }
 
         public double Z
         {
-            get => z;
-            set => SetProperty(ref z, value);
+            get => this.z;
+            set => this.SetProperty(ref this.z, value);
         }
 
         public bool IsActive
         {
-            get => isActive;
-            set => SetProperty(ref isActive, value);
+            get => this.isActive;
+            set => this.SetProperty(ref this.isActive, value);
         }
 
         public string[] Speeds { get; } =
@@ -60,66 +59,66 @@ namespace Samples.ViewModel
 
         public int Speed
         {
-            get => speed;
-            set => SetProperty(ref speed, value);
+            get => this.speed;
+            set => this.SetProperty(ref this.speed, value);
         }
 
         public override void OnAppearing()
         {
-            Accelerometer.ReadingChanged += OnReadingChanged;
-            Accelerometer.ShakeDetected += Accelerometer_OnShaked;
+            Accelerometer.ReadingChanged += this.OnReadingChanged;
+            Accelerometer.ShakeDetected += this.Accelerometer_OnShaked;
 
             base.OnAppearing();
         }
 
-        void Accelerometer_OnShaked(object sender, EventArgs e) =>
-            ShakeTime = $"Shake detected: {DateTime.Now.ToLongTimeString()}";
+        private void Accelerometer_OnShaked(object sender, EventArgs e) =>
+            this.ShakeTime = $"Shake detected: {DateTime.Now.ToLongTimeString()}";
 
         public override void OnDisappearing()
         {
-            OnStop();
-            Accelerometer.ReadingChanged -= OnReadingChanged;
-            Accelerometer.ShakeDetected -= Accelerometer_OnShaked;
+            this.OnStop();
+            Accelerometer.ReadingChanged -= this.OnReadingChanged;
+            Accelerometer.ShakeDetected -= this.Accelerometer_OnShaked;
             base.OnDisappearing();
         }
 
-        async void OnStart()
+        private async void OnStart()
         {
             try
             {
-                Accelerometer.Start((SensorSpeed)Speed);
-                IsActive = true;
+                Accelerometer.Start((SensorSpeed)this.Speed);
+                this.IsActive = true;
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync($"Unable to start accelerometer: {ex.Message}");
+                await this.DisplayAlertAsync($"Unable to start accelerometer: {ex.Message}");
             }
         }
 
-        void OnStop()
+        private void OnStop()
         {
-            IsActive = false;
+            this.IsActive = false;
             Accelerometer.Stop();
         }
 
-        void OnReadingChanged(object sender, AccelerometerChangedEventArgs e)
+        private void OnReadingChanged(object sender, AccelerometerChangedEventArgs e)
         {
             var data = e.Reading;
-            switch ((SensorSpeed)Speed)
+            switch ((SensorSpeed)this.Speed)
             {
                 case SensorSpeed.Fastest:
                 case SensorSpeed.Game:
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        X = data.Acceleration.X;
-                        Y = data.Acceleration.Y;
-                        Z = data.Acceleration.Z;
+                        this.X = data.Acceleration.X;
+                        this.Y = data.Acceleration.Y;
+                        this.Z = data.Acceleration.Z;
                     });
                     break;
                 default:
-                    X = data.Acceleration.X;
-                    Y = data.Acceleration.Y;
-                    Z = data.Acceleration.Z;
+                    this.X = data.Acceleration.X;
+                    this.Y = data.Acceleration.Y;
+                    this.Z = data.Acceleration.Z;
                     break;
             }
         }

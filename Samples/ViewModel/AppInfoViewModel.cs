@@ -19,7 +19,7 @@ namespace Samples.ViewModel
 
         public AppInfoViewModel()
         {
-            ShowSettingsUICommand = new Command(() => AppInfo.ShowSettingsUI());
+            this.ShowSettingsUICommand = new Command(AppInfo.ShowSettingsUI);
         }
     }
 }

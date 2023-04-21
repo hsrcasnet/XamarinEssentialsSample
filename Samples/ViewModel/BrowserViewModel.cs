@@ -10,47 +10,46 @@ namespace Samples.ViewModel
 {
     public class BrowserViewModel : BaseViewModel
     {
-        string browserStatus;
-        string uri = "http://xamarin.com";
-        int browserType = (int)BrowserLaunchMode.SystemPreferred;
-        int browserTitleType = (int)BrowserTitleMode.Default;
-        int controlColor = 0;
-        int toolbarColor = 0;
-        bool presentAsFormSheet = false;
-        bool presentAsPageSheet = false;
-        bool launchAdjacent = false;
-
-        Dictionary<string, Color> colorDictionary;
+        private string browserStatus;
+        private string uri = "http://xamarin.com";
+        private int browserType = (int)BrowserLaunchMode.SystemPreferred;
+        private int browserTitleType = (int)BrowserTitleMode.Default;
+        private int controlColor = 0;
+        private int toolbarColor = 0;
+        private bool presentAsFormSheet = false;
+        private bool presentAsPageSheet = false;
+        private bool launchAdjacent = false;
+        private readonly Dictionary<string, Color> colorDictionary;
 
         public List<string> AllColors { get; }
 
         public BrowserViewModel()
         {
-            OpenUriCommand = new Command(OpenUri);
+            this.OpenUriCommand = new Command(this.OpenUri);
 
-            colorDictionary = typeof(Color)
+            this.colorDictionary = typeof(Color)
                 .GetFields()
                 .Where(f => f.FieldType == typeof(Color) && f.IsStatic && f.IsPublic)
                 .ToDictionary(f => f.Name, f => (Color)f.GetValue(null));
 
-            var colors = colorDictionary.Keys.ToList();
+            var colors = this.colorDictionary.Keys.ToList();
             colors.Insert(0, "None");
 
-            AllColors = colors;
+            this.AllColors = colors;
         }
 
         public ICommand OpenUriCommand { get; }
 
         public string BrowserStatus
         {
-            get => browserStatus;
-            set => SetProperty(ref browserStatus, value);
+            get => this.browserStatus;
+            set => this.SetProperty(ref this.browserStatus, value);
         }
 
         public string Uri
         {
-            get => uri;
-            set => SetProperty(ref uri, value);
+            get => this.uri;
+            set => this.SetProperty(ref this.uri, value);
         }
 
         public List<string> BrowserLaunchModes { get; } =
@@ -62,8 +61,8 @@ namespace Samples.ViewModel
 
         public int BrowserType
         {
-            get => browserType;
-            set => SetProperty(ref browserType, value);
+            get => this.browserType;
+            set => this.SetProperty(ref this.browserType, value);
         }
 
         public List<string> BrowserTitleModes { get; } =
@@ -76,80 +75,90 @@ namespace Samples.ViewModel
 
         public int BrowserTitleType
         {
-            get => browserTitleType;
-            set => SetProperty(ref browserTitleType, value);
+            get => this.browserTitleType;
+            set => this.SetProperty(ref this.browserTitleType, value);
         }
 
         public int ToolbarColor
         {
-            get => toolbarColor;
-            set => SetProperty(ref toolbarColor, value);
+            get => this.toolbarColor;
+            set => this.SetProperty(ref this.toolbarColor, value);
         }
 
         public int ControlColor
         {
-            get => controlColor;
-            set => SetProperty(ref controlColor, value);
+            get => this.controlColor;
+            set => this.SetProperty(ref this.controlColor, value);
         }
 
         public bool PresentAsFormSheet
         {
-            get => presentAsFormSheet;
-            set => SetProperty(ref presentAsFormSheet, value);
+            get => this.presentAsFormSheet;
+            set => this.SetProperty(ref this.presentAsFormSheet, value);
         }
 
         public bool PresentAsPageSheet
         {
-            get => presentAsPageSheet;
-            set => SetProperty(ref presentAsPageSheet, value);
+            get => this.presentAsPageSheet;
+            set => this.SetProperty(ref this.presentAsPageSheet, value);
         }
 
         public bool LaunchAdjacent
         {
-            get => launchAdjacent;
-            set => SetProperty(ref launchAdjacent, value);
+            get => this.launchAdjacent;
+            set => this.SetProperty(ref this.launchAdjacent, value);
         }
 
-        async void OpenUri()
+        private async void OpenUri()
         {
-            if (IsBusy)
+            if (this.IsBusy)
+            {
                 return;
+            }
 
-            IsBusy = true;
+            this.IsBusy = true;
             try
             {
                 var flags = BrowserLaunchFlags.None;
-                if (PresentAsPageSheet)
-                    flags |= BrowserLaunchFlags.PresentAsPageSheet;
-                if (PresentAsFormSheet)
-                    flags |= BrowserLaunchFlags.PresentAsFormSheet;
-                if (LaunchAdjacent)
-                    flags |= BrowserLaunchFlags.LaunchAdjacent;
-
-                await Browser.OpenAsync(uri, new BrowserLaunchOptions
+                if (this.PresentAsPageSheet)
                 {
-                    LaunchMode = (BrowserLaunchMode)BrowserType,
-                    TitleMode = (BrowserTitleMode)BrowserTitleType,
-                    PreferredToolbarColor = GetColor(ToolbarColor),
-                    PreferredControlColor = GetColor(ControlColor),
+                    flags |= BrowserLaunchFlags.PresentAsPageSheet;
+                }
+
+                if (this.PresentAsFormSheet)
+                {
+                    flags |= BrowserLaunchFlags.PresentAsFormSheet;
+                }
+
+                if (this.LaunchAdjacent)
+                {
+                    flags |= BrowserLaunchFlags.LaunchAdjacent;
+                }
+
+                await Browser.OpenAsync(this.uri, new BrowserLaunchOptions
+                {
+                    LaunchMode = (BrowserLaunchMode)this.BrowserType,
+                    TitleMode = (BrowserTitleMode)this.BrowserTitleType,
+                    PreferredToolbarColor = GetColor(this.ToolbarColor),
+                    PreferredControlColor = GetColor(this.ControlColor),
                     Flags = flags
                 });
             }
             catch (Exception e)
             {
-                BrowserStatus = $"Unable to open Uri {e.Message}";
-                Debug.WriteLine(browserStatus);
+                this.BrowserStatus = $"Unable to open Uri {e.Message}";
+                Debug.WriteLine(this.browserStatus);
             }
             finally
             {
-                IsBusy = false;
+                this.IsBusy = false;
             }
 
             Color? GetColor(int index)
             {
                 return index <= 0
-                    ? (Color?)null
-                    : (System.Drawing.Color)colorDictionary[AllColors[index]];
+                    ? null
+                    : (System.Drawing.Color)this.colorDictionary[this.AllColors[index]];
             }
         }
     }

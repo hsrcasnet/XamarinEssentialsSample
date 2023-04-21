@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -8,14 +7,14 @@ namespace Samples.ViewModel
 {
     public class BarometerViewModel : BaseViewModel
     {
-        bool isActive;
-        double pressure;
-        int speed = 0;
+        private bool isActive;
+        private double pressure;
+        private int speed = 0;
 
         public BarometerViewModel()
         {
-            StartCommand = new Command(OnStartBarometer);
-            StopCommand = new Command(OnStop);
+            this.StartCommand = new Command(this.OnStartBarometer);
+            this.StopCommand = new Command(this.OnStop);
         }
 
         public ICommand StartCommand { get; }
@@ -24,14 +23,14 @@ namespace Samples.ViewModel
 
         public bool IsActive
         {
-            get => isActive;
-            set => SetProperty(ref isActive, value);
+            get => this.isActive;
+            set => this.SetProperty(ref this.isActive, value);
         }
 
         public double Pressure
         {
-            get => pressure;
-            set => SetProperty(ref pressure, value);
+            get => this.pressure;
+            set => this.SetProperty(ref this.pressure, value);
         }
 
         public string[] Speeds { get; } =
@@ -39,49 +38,49 @@ namespace Samples.ViewModel
 
         public int Speed
         {
-            get => speed;
-            set => SetProperty(ref speed, value);
+            get => this.speed;
+            set => this.SetProperty(ref this.speed, value);
         }
 
         public override void OnAppearing()
         {
-            Barometer.ReadingChanged += OnBarometerReadingChanged;
+            Barometer.ReadingChanged += this.OnBarometerReadingChanged;
             base.OnAppearing();
         }
 
         public override void OnDisappearing()
         {
-            OnStop();
-            Barometer.ReadingChanged -= OnBarometerReadingChanged;
+            this.OnStop();
+            Barometer.ReadingChanged -= this.OnBarometerReadingChanged;
 
             base.OnDisappearing();
         }
 
-        async void OnStartBarometer()
+        private async void OnStartBarometer()
         {
             try
             {
-                Barometer.Start((SensorSpeed)Speed);
-                IsActive = true;
+                Barometer.Start((SensorSpeed)this.Speed);
+                this.IsActive = true;
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync($"Unable to start barometer: {ex.Message}");
+                await this.DisplayAlertAsync($"Unable to start barometer: {ex.Message}");
             }
         }
 
-        void OnBarometerReadingChanged(object sender, BarometerChangedEventArgs e)
+        private void OnBarometerReadingChanged(object sender, BarometerChangedEventArgs e)
         {
-            Pressure = e.Reading.PressureInHectopascals;
+            this.Pressure = e.Reading.PressureInHectopascals;
         }
 
-        void OnStop()
+        private void OnStop()
         {
             try
             {
-                IsActive = false;
+                this.IsActive = false;
                 Barometer.Stop();
-                Barometer.ReadingChanged -= OnBarometerReadingChanged;
+                Barometer.ReadingChanged -= this.OnBarometerReadingChanged;
             }
             catch (Exception ex)
             {

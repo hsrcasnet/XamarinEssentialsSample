@@ -8,16 +8,16 @@ namespace Samples.ViewModel
 {
     public class GeolocationViewModel : BaseViewModel
     {
-        string notAvailable = "not available";
-        string lastLocation;
-        string currentLocation;
-        int accuracy = (int)GeolocationAccuracy.Default;
-        CancellationTokenSource cts;
+        private readonly string notAvailable = "not available";
+        private string lastLocation;
+        private string currentLocation;
+        private int accuracy = (int)GeolocationAccuracy.Default;
+        private CancellationTokenSource cts;
 
         public GeolocationViewModel()
         {
-            GetLastLocationCommand = new Command(OnGetLastLocation);
-            GetCurrentLocationCommand = new Command(OnGetCurrentLocation);
+            this.GetLastLocationCommand = new Command(this.OnGetLastLocation);
+            this.GetCurrentLocationCommand = new Command(this.OnGetCurrentLocation);
         }
 
         public ICommand GetLastLocationCommand { get; }
@@ -26,14 +26,14 @@ namespace Samples.ViewModel
 
         public string LastLocation
         {
-            get => lastLocation;
-            set => SetProperty(ref lastLocation, value);
+            get => this.lastLocation;
+            set => this.SetProperty(ref this.lastLocation, value);
         }
 
         public string CurrentLocation
         {
-            get => currentLocation;
-            set => SetProperty(ref currentLocation, value);
+            get => this.currentLocation;
+            set => this.SetProperty(ref this.currentLocation, value);
         }
 
         public string[] Accuracies
@@ -41,69 +41,69 @@ namespace Samples.ViewModel
 
         public int Accuracy
         {
-            get => accuracy;
-            set => SetProperty(ref accuracy, value);
+            get => this.accuracy;
+            set => this.SetProperty(ref this.accuracy, value);
         }
 
-        async void OnGetLastLocation()
+        private async void OnGetLastLocation()
         {
-            if (IsBusy)
+            if (this.IsBusy)
+            {
                 return;
+            }
 
-            IsBusy = true;
+            this.IsBusy = true;
             try
             {
                 var location = await Geolocation.GetLastKnownLocationAsync();
-                LastLocation = FormatLocation(location);
+                this.LastLocation = this.FormatLocation(location);
             }
             catch (Exception ex)
             {
-                LastLocation = FormatLocation(null, ex);
+                this.LastLocation = this.FormatLocation(null, ex);
             }
-            IsBusy = false;
+            this.IsBusy = false;
         }
 
-        async void OnGetCurrentLocation()
+        private async void OnGetCurrentLocation()
         {
-            if (IsBusy)
+            if (this.IsBusy)
+            {
                 return;
+            }
 
-            IsBusy = true;
+            this.IsBusy = true;
             try
             {
-                var request = new GeolocationRequest((GeolocationAccuracy)Accuracy);
-                cts = new CancellationTokenSource();
-                var location = await Geolocation.GetLocationAsync(request, cts.Token);
-                CurrentLocation = FormatLocation(location);
+                var request = new GeolocationRequest((GeolocationAccuracy)this.Accuracy);
+                this.cts = new CancellationTokenSource();
+                var location = await Geolocation.GetLocationAsync(request, this.cts.Token);
+                this.CurrentLocation = this.FormatLocation(location);
             }
             catch (Exception ex)
             {
-                CurrentLocation = FormatLocation(null, ex);
+                this.CurrentLocation = this.FormatLocation(null, ex);
             }
             finally
             {
-                cts.Dispose();
-                cts = null;
+                this.cts.Dispose();
+                this.cts = null;
             }
-            IsBusy = false;
+            this.IsBusy = false;
         }
 
-        string FormatLocation(Location location, Exception ex = null)
+        private string FormatLocation(Location location, Exception ex = null)
         {
-            if (location == null)
-            {
-                return $"Unable to detect location. Exception: {ex?.Message ?? string.Empty}";
-            }
-
-            return
-                $"Latitude: {location.Latitude}\n" +
+            return location == null
+                ? $"Unable to detect location. Exception: {ex?.Message ?? string.Empty}"
+                : $"Latitude: {location.Latitude}\n" +
                 $"Longitude: {location.Longitude}\n" +
                 $"HorizontalAccuracy: {location.Accuracy}\n" +
-                $"Altitude: {(location.Altitude.HasValue ? location.Altitude.Value.ToString() : notAvailable)}\n" +
-                $"AltitudeRefSys: {location.AltitudeReferenceSystem.ToString()}\n" +
-                $"VerticalAccuracy: {(location.VerticalAccuracy.HasValue ? location.VerticalAccuracy.Value.ToString() : notAvailable)}\n" +
-                $"Heading: {(location.Course.HasValue ? location.Course.Value.ToString() : notAvailable)}\n" +
-                $"Speed: {(location.Speed.HasValue ? location.Speed.Value.ToString() : notAvailable)}\n" +
+                $"Altitude: {(location.Altitude.HasValue ? location.Altitude.Value.ToString() : this.notAvailable)}\n" +
+                $"AltitudeRefSys: {location.AltitudeReferenceSystem}\n" +
+                $"VerticalAccuracy: {(location.VerticalAccuracy.HasValue ? location.VerticalAccuracy.Value.ToString() : this.notAvailable)}\n" +
+                $"Heading: {(location.Course.HasValue ? location.Course.Value.ToString() : this.notAvailable)}\n" +
+                $"Speed: {(location.Speed.HasValue ? location.Speed.Value.ToString() : this.notAvailable)}\n" +
                 $"Date (UTC): {location.Timestamp:d}\n" +
                 $"Time (UTC): {location.Timestamp:T}\n" +
                 $"Moking Provider: {location.IsFromMockProvider}";
@@ -111,10 +111,12 @@ namespace Samples.ViewModel
 
         public override void OnDisappearing()
         {
-            if (IsBusy)
+            if (this.IsBusy)
             {
-                if (cts != null && !cts.IsCancellationRequested)
-                    cts.Cancel();
+                if (this.cts != null && !this.cts.IsCancellationRequested)
+                {
+                    this.cts.Cancel();
+                }
             }
             base.OnDisappearing();
         }
