@@ -28,6 +28,7 @@ namespace Samples.View
                 { "PageName", $"{item.PageType.Name}"}
             };
             Analytics.TrackEvent("PageView", properties);
+
             Analytics.TrackEvent($"PageView: {item.PageType.Name}");
 
             try
@@ -43,7 +44,7 @@ namespace Samples.View
             catch (Exception ex)
             {
                 // Demo: Use TrackError to write error/crash information to AppCenter
-                Crashes.TrackError(ex);
+                 Crashes.TrackError(ex);
             }
 
             // Demo: App crashes are automatically reported to AppCenter
