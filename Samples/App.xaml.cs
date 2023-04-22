@@ -41,18 +41,12 @@ namespace Samples
 
         protected override async void OnStart()
         {
-            if ((Device.RuntimePlatform == Device.Android && CommonConstants.AppCenterAndroid != "AC_ANDROID") ||
-                (Device.RuntimePlatform == Device.iOS && CommonConstants.AppCenteriOS != "AC_IOS") ||
-                (Device.RuntimePlatform == Device.UWP && CommonConstants.AppCenterUWP != "AC_UWP"))
-            {
-                AppCenter.Start(
-                    $"ios={CommonConstants.AppCenteriOS};" +
-                    $"android={CommonConstants.AppCenterAndroid};" +
-                    $"uwp={CommonConstants.AppCenterUWP}",
-                    typeof(Analytics),
-                    typeof(Crashes),
-                    typeof(Distribute));
-            }
+            AppCenter.Start(
+                $"ios=ad52a6d1-2e81-4af1-9398-54e53603311e;" +
+                $"android=c45fb280-e432-44cb-8b1c-eefa1c63fbd4;" +
+                typeof(Analytics),
+                typeof(Crashes),
+                typeof(Distribute));
 
             try
             {

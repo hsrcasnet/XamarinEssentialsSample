@@ -34,6 +34,7 @@ namespace Samples.View
             {
                 await this.Navigation.PushAsync((Page)Activator.CreateInstance(item.PageType));
 
+                // Demo: Throw exception if BatteryPage is opened
                 if (item.PageType == typeof(BatteryPage))
                 {
                     throw new InvalidOperationException("This is just a test exception", new NullReferenceException("Something cannot be null"));
