@@ -43,7 +43,7 @@ namespace Samples
         {
             AppCenter.Start(
                 $"ios=ad52a6d1-2e81-4af1-9398-54e53603311e;" +
-                $"android=c45fb280-e432-44cb-8b1c-eefa1c63fbd4;" +
+                $"android=c45fb280-e432-44cb-8b1c-eefa1c63fbd4;",
                 typeof(Analytics),
                 typeof(Crashes),
                 typeof(Distribute));
